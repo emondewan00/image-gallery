@@ -3,22 +3,32 @@ import { Box, Button, Modal } from "@mui/material";
 import React, { useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import DeleteIcon from "@mui/icons-material/Delete";
+import AddIcon from "@mui/icons-material/Add";
+// import ResponsiveAppBar from "@/components/Header";
+import Image from "next/image";
+import AddPhotoForm from "@/components/AddPhotoForm";
 
 const style = {
   position: "absolute",
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  // border: "1px solid black",
-  p: 8,
 };
 
 const Home = () => {
   const [open, setOpen] = useState<boolean>(false);
-  const [active, setActive] = useState<{ img: string; title: string }>();
+  const [active, setActive] = useState<{ img: string; title: string }>({
+    img: "",
+    title: "",
+  });
+  const [openAdd, setOpenAdd] = useState<boolean>(false);
   const handleClose = () => setOpen(false);
+
   return (
     <div className="container mx-auto relative">
+      {/* <ResponsiveAppBar /> */}
+
+      {/* photo gallery */}
       <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 py-4 gap-4">
         {itemData.map((item, i) => (
           <div key={i} className="">
@@ -28,7 +38,9 @@ const Home = () => {
                 setActive(item);
               }}
             >
-              <img
+              <Image
+                width={500}
+                height={500}
                 src={item.img}
                 alt={item.title}
                 className="w-full object-contain rounded-lg"
@@ -37,6 +49,28 @@ const Home = () => {
           </div>
         ))}
       </div>
+
+      {/* add image button */}
+      <div
+        onClick={() => setOpenAdd(true)}
+        className="bg-blue-500 p-4 flex items-center justify-center w-fit rounded-full text-white fixed bottom-4 right-4 lg:right-40 cursor-pointer"
+      >
+        <AddIcon />
+      </div>
+
+      {/* add image modal */}
+      <Modal
+        open={openAdd}
+        onClose={() => setOpenAdd(false)}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+          <AddPhotoForm />
+        </Box>
+      </Modal>
+
+      {/*  photo modal */}
       <Modal
         open={open}
         onClose={handleClose}
@@ -53,10 +87,13 @@ const Home = () => {
             </button>
           </div>
           <Box sx={style}>
-            <img
-              className="object-contain size-96  border"
+            <Image
+              width={400}
+              height={400}
+              className="object-contain max-h-[800px] rounded-lg w-full"
               src={active?.img}
               alt={active?.title}
+              quality={100}
             />
           </Box>
         </>
