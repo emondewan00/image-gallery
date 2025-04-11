@@ -8,6 +8,7 @@ import AddIcon from "@mui/icons-material/Add";
 import Image from "next/image";
 import AddPhotoForm from "@/components/AddPhotoForm";
 import client from "@/lib/supabase";
+import toast from "react-hot-toast";
 
 const style = {
   position: "absolute",
@@ -90,6 +91,34 @@ const Home = () => {
   const [openAdd, setOpenAdd] = useState<boolean>(false);
   const handleClose = () => setOpen(false);
 
+  const deleteImage = async () => {
+    try {
+      const url = new URL(active.imgUrl);
+      const pathParts = url.pathname.split("/");
+      const bucket = pathParts[4]; // 5th part is the bucket name
+      const filePath = pathParts.slice(5).join("/"); // everything after bucket is the file path
+
+      await client.storage.from(bucket).remove([filePath]);
+      setItems((prev) => prev.filter((item) => item.id !== active.id));
+      // Delete the record from the "images" table
+      const { error: deleteError } = await client
+        .from("images")
+        .delete()
+        .eq("id", active.id);
+
+      if (deleteError) {
+        console.error("Error deleting record:", deleteError);
+        toast.error("Error deleting record");
+        return;
+      }
+      toast.success("Image deleted successfully");
+      setOpen(false);
+    } catch (error) {
+      console.error("Error deleting image:", error);
+      toast.error("Error deleting image");
+    }
+  };
+
   return (
     <div className="container mx-auto relative">
       {/* <ResponsiveAppBar /> */}
@@ -139,7 +168,7 @@ const Home = () => {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          <AddPhotoForm />
+          <AddPhotoForm onClose={() => setOpenAdd(false)} />
         </Box>
       </Modal>
 
@@ -150,12 +179,15 @@ const Home = () => {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <>
+        <div>
           <div className="flex justify-end mr-10 mt-10 gap-4 ">
             <button className=" cursor-pointer" onClick={handleClose}>
               <CloseIcon className="text-white" />
             </button>
-            <button className="bg-red-400 text-white px-2 py-1 rounded cursor-pointer">
+            <button
+              onClick={deleteImage}
+              className="bg-red-400 text-white px-2 py-1 rounded cursor-pointer"
+            >
               <DeleteIcon />
             </button>
           </div>
@@ -169,7 +201,7 @@ const Home = () => {
               quality={100}
             />
           </Box>
-        </>
+        </div>
       </Modal>
     </div>
   );

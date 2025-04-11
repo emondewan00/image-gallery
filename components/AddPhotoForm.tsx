@@ -6,8 +6,13 @@ import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import AttachFileIcon from "@mui/icons-material/AttachFile";
 import prettyBytes from "pretty-bytes";
 import client from "@/lib/supabase";
+import toast from "react-hot-toast";
 
-const AddPhotoForm = () => {
+type AddPhotoFormProps = {
+  onClose: () => void;
+};
+
+const AddPhotoForm: React.FC<AddPhotoFormProps> = ({ onClose }) => {
   const [images, setImages] = React.useState<File[]>([]);
   const [title, setTitle] = React.useState<string>("");
 
@@ -29,13 +34,12 @@ const AddPhotoForm = () => {
       const imagesRes = await Promise.all(
         images.map(async (image) => {
           const fileName = `${image.name.split(".")[0]}-${Date.now()}`;
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          const { data, error } = await client.storage
+
+          const { error } = await client.storage
             .from("images")
             .upload(fileName, image);
 
           if (error) {
-            console.error("Storage upload error:", error);
             throw error;
           }
 
@@ -52,21 +56,22 @@ const AddPhotoForm = () => {
 
       if (successfulUploads.length > 0) {
         // 4. Store the image URLs in your table
-        const { data: tableData, error: tableError } = await client
+        const { error: tableError } = await client
           .from("images")
           .insert(successfulUploads);
 
         if (tableError) {
-          console.error("Database insert error:", tableError);
+          toast.error("Please try again");
           return;
         }
-
-        console.log("Successfully stored:", tableData);
+        toast.success("Images uploaded successfully");
+        onClose();
       } else {
-        console.log("No images were successfully uploaded");
+        toast.error("No images were successfully uploaded");
       }
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
-      console.error("Error in handleSubmit:", error);
+      toast.error("Please try again");
     }
   };
 
@@ -111,6 +116,7 @@ const AddPhotoForm = () => {
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             className="border px-2 py-4 rounded border-gray-300 text-slate-900"
+            required
           />
         </div>
         <button
