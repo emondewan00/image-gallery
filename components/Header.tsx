@@ -12,6 +12,7 @@ import Button from "@mui/material/Button";
 import MenuItem from "@mui/material/MenuItem";
 import { Search as SearchIcon } from "@mui/icons-material";
 import { alpha, InputBase, styled } from "@mui/material";
+import { useSearch } from "@/provider/SearchProvider";
 
 const pages = ["Products", "Pricing", "Blog"];
 
@@ -62,6 +63,7 @@ function ResponsiveAppBar() {
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
   };
+  const { search, setSearch } = useSearch();
 
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
@@ -156,6 +158,8 @@ function ResponsiveAppBar() {
               <SearchIcon />
             </SearchIconWrapper>
             <StyledInputBase
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
               placeholder="Search…"
               inputProps={{ "aria-label": "search" }}
             />

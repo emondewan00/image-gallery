@@ -16,7 +16,6 @@
     "@mui/material": "^7.0.1",
     "@mui/material-nextjs": "^7.0.0",
     "@supabase/supabase-js": "^2.49.4",
-    "mui-file-input": "^7.0.0",
     "next": "15.2.4",
     "pretty-bytes": "^6.1.1",
     "react": "^19.0.0",

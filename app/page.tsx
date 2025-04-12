@@ -8,6 +8,7 @@ import Image from "next/image";
 import AddPhotoForm from "@/components/AddPhotoForm";
 import client from "@/lib/supabase";
 import toast from "react-hot-toast";
+import { useSearch } from "@/provider/SearchProvider";
 
 const style = {
   position: "absolute",
@@ -29,10 +30,18 @@ const Home = () => {
     imgUrl: "",
     title: "",
   });
+  const { search } = useSearch();
   const [hasMore, setHasMore] = useState<boolean>(true);
   const [items, setItems] = useState<Item[]>([]);
   const spinnerRef = useRef<HTMLDivElement>(null);
   const lastIdRef = useRef<number | null>(null);
+
+  // Reset pagination when search term changes
+  useEffect(() => {
+    setItems([]);
+    lastIdRef.current = null;
+    setHasMore(true);
+  }, [search]);
 
   const loadMore = useCallback(async () => {
     if (!hasMore) return;
@@ -47,6 +56,11 @@ const Home = () => {
       // Add cursor-based pagination if we have a last ID
       if (lastIdRef.current) {
         query = query.lt("id", lastIdRef.current);
+      }
+
+      // Add title search condition if searchTerm exists
+      if (search.trim()) {
+        query = query.ilike("title", `%${search}%`);
       }
 
       const { data, error } = await query;
@@ -66,7 +80,7 @@ const Home = () => {
     } catch (error) {
       console.error("Error in loadMore:", error);
     }
-  }, [hasMore]);
+  }, [hasMore, search]);
 
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
