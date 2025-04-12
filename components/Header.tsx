@@ -10,7 +10,6 @@ import MenuIcon from "@mui/icons-material/Menu";
 import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
 import MenuItem from "@mui/material/MenuItem";
-import AdbIcon from "@mui/icons-material/Adb";
 import { Search as SearchIcon } from "@mui/icons-material";
 import { alpha, InputBase, styled } from "@mui/material";
 
@@ -69,15 +68,9 @@ function ResponsiveAppBar() {
   };
 
   return (
-    <AppBar position="fixed" color="default">
+    <AppBar position="fixed">
       <Container maxWidth="xl">
-        <Toolbar
-          disableGutters
-          style={{
-            color: "black",
-          }}
-        >
-          <AdbIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
+        <Toolbar disableGutters>
           <Typography
             variant="h6"
             noWrap
@@ -93,13 +86,11 @@ function ResponsiveAppBar() {
               textDecoration: "none",
             }}
           >
-            LOGO
+            IMG
           </Typography>
-
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
             <IconButton
               size="large"
-              aria-label="account of current user"
               aria-controls="menu-appbar"
               aria-haspopup="true"
               onClick={handleOpenNavMenu}
@@ -130,7 +121,7 @@ function ResponsiveAppBar() {
               ))}
             </Menu>
           </Box>
-          <AdbIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} />
+
           <Typography
             variant="h5"
             noWrap
@@ -160,7 +151,7 @@ function ResponsiveAppBar() {
               </Button>
             ))}
           </Box>
-          <Search >
+          <Search>
             <SearchIconWrapper>
               <SearchIcon />
             </SearchIconWrapper>

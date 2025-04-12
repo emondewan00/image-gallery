@@ -4,7 +4,6 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
-// import ResponsiveAppBar from "@/components/Header";
 import Image from "next/image";
 import AddPhotoForm from "@/components/AddPhotoForm";
 import client from "@/lib/supabase";
@@ -95,10 +94,10 @@ const Home = () => {
     try {
       const url = new URL(active.imgUrl);
       const pathParts = url.pathname.split("/");
-      const bucket = pathParts[4]; // 5th part is the bucket name
-      const filePath = pathParts.slice(5).join("/"); // everything after bucket is the file path
+      const filePath = pathParts.slice(6).join("/"); // Extract the file path
+      const decodedFilePath = decodeURIComponent(filePath);
 
-      await client.storage.from(bucket).remove([filePath]);
+      await client.storage.from("images").remove([decodedFilePath]);
       setItems((prev) => prev.filter((item) => item.id !== active.id));
       // Delete the record from the "images" table
       const { error: deleteError } = await client
@@ -120,9 +119,7 @@ const Home = () => {
   };
 
   return (
-    <div className="container mx-auto relative">
-      {/* <ResponsiveAppBar /> */}
-
+    <div className="mt-20">
       {/* photo gallery */}
       <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 py-4 gap-4">
         {items.map((item) => (
