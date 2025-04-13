@@ -5,6 +5,7 @@ import { AppRouterCacheProvider } from "@mui/material-nextjs/v13-appRouter";
 import { Toaster } from "react-hot-toast";
 import ResponsiveAppBar from "@/components/Header";
 import { SearchProvider } from "@/provider/SearchProvider";
+import { ImageGalleryProvider } from "@/provider/ImageGalleryContext";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -32,12 +33,14 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <SearchProvider>
-          <AppRouterCacheProvider>
-            <div className="container mx-auto relative">
-              <ResponsiveAppBar />
-              {children}
-            </div>
-          </AppRouterCacheProvider>
+          <ImageGalleryProvider>
+            <AppRouterCacheProvider>
+              <div className="container mx-auto relative">
+                <ResponsiveAppBar />
+                {children}
+              </div>
+            </AppRouterCacheProvider>
+          </ImageGalleryProvider>
         </SearchProvider>
         <Toaster />
       </body>
