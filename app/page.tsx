@@ -1,5 +1,5 @@
 "use client";
-import { Button } from "@mui/material";
+import { Button, Skeleton } from "@mui/material";
 import React from "react";
 import AddIcon from "@mui/icons-material/Add";
 import Image from "next/image";
@@ -8,8 +8,27 @@ import AddImageModal from "@/components/AddImageModal";
 import PhotoModal from "@/components/PhotoModal";
 
 const Home = () => {
-  const { items, setActive, setOpen, setOpenAdd, spinnerRef } =
+  const { items, setActive, setOpen, setOpenAdd, spinnerRef, isLoading } =
     useImageGallery();
+
+  if (isLoading) {
+    return (
+      <div className="mt-20">
+        <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 py-4 gap-4">
+          {[...Array(12)].map((_, index) => (
+            <div key={index} className="mb-2">
+              <Skeleton
+                variant="rectangular"
+                animation="wave"
+                height={200}
+                width={"100%"}
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="mt-20">
