@@ -11,16 +11,25 @@ const Home = () => {
   const { items, setActive, setOpen, setOpenAdd, spinnerRef, isLoading } =
     useImageGallery();
 
+  const numbersOfSkeleton = () => {
+    const numbers = [];
+    for (let i = 0; i < 12; i++) {
+      const randomHeight = Math.floor(Math.random() * 600);
+      numbers.push({ height: randomHeight, width: "100%" });
+    }
+    return numbers;
+  };
+
   if (isLoading) {
     return (
       <div className="mt-20">
         <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 py-4 gap-4">
-          {[...Array(12)].map((_, index) => (
+          {numbersOfSkeleton().map((item, index) => (
             <div key={index} className="mb-2">
               <Skeleton
-                variant="rectangular"
+                variant="rounded"
                 animation="wave"
-                height={200}
+                height={item.height}
                 width={"100%"}
               />
             </div>

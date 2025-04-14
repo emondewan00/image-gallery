@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -63,7 +63,15 @@ function ResponsiveAppBar() {
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
   };
-  const { search, setSearch } = useSearch();
+  const { setSearch } = useSearch();
+  const [searchText, setSearchText] = useState("");
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setSearch(searchText);
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [searchText, setSearch]);
 
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
@@ -159,8 +167,8 @@ function ResponsiveAppBar() {
               <SearchIcon />
             </SearchIconWrapper>
             <StyledInputBase
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              value={searchText}
+              onChange={(e) => setSearchText(e.target.value)}
               placeholder="Search…"
               inputProps={{ "aria-label": "search" }}
             />
